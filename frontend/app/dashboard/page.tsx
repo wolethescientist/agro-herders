@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import Navbar from '@/components/Navbar';
+import Layout from '@/components/Layout';
 import { dashboardAPI } from '@/lib/api';
 import { DashboardStats } from '@/lib/types';
 import { Users, Beef, MapPin, CheckCircle, AlertTriangle } from 'lucide-react';
@@ -36,8 +36,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+      <Layout>
         <div className="container mx-auto px-4 py-8">
           <div className="h-9 w-64 bg-gray-200 rounded animate-pulse mb-8"></div>
 
@@ -72,14 +71,12 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
+    <Layout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Security Command Dashboard
@@ -200,6 +197,6 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

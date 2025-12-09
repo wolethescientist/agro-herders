@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import Navbar from '@/components/Navbar';
+import Layout from '@/components/Layout';
 import { verificationAPI } from '@/lib/api';
 import { VerificationResult } from '@/lib/types';
 import { Fingerprint, Scan, Radio, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
@@ -82,9 +82,7 @@ export default function VerifyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
+    <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-800 mb-8">
@@ -254,6 +252,6 @@ export default function VerifyPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

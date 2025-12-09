@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import dynamic from 'next/dynamic';
-import Navbar from '@/components/Navbar';
+import Layout from '@/components/Layout';
 import { routesAPI } from '@/lib/api';
 import { Route } from '@/lib/types';
 import { MapPin, CheckCircle, XCircle } from 'lucide-react';
@@ -67,19 +67,16 @@ export default function RoutesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+      <Layout>
         <div className="flex items-center justify-center h-96">
           <p className="text-gray-600">Loading routes...</p>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
+    <Layout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Approved Grazing Routes
@@ -199,6 +196,6 @@ export default function RoutesPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

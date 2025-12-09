@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import Navbar from '@/components/Navbar';
+import Layout from '@/components/Layout';
 import { herdersAPI } from '@/lib/api';
 import { UserPlus, Hash } from 'lucide-react';
 
@@ -77,9 +77,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
+    <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg p-8">
@@ -208,6 +206,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
