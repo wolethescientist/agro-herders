@@ -1,0 +1,32 @@
+{
+  "name": "connexxion-agro-herders-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.5",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.1",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^0.309.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/leaflet": "^1.9.8",
+    "@types/js-cookie": "^3.0.6",
+    "typescript": "^5",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0"
+  }
+}
