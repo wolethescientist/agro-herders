@@ -4,14 +4,18 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Layout from '@/components/Layout';
+import PhotoUpload from '@/components/PhotoUpload';
 import { herdersAPI } from '@/lib/api';
-import { UserPlus, Fingerprint, User, MapPin, Phone, CreditCard, Image, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { uploadHerderPhoto } from '@/lib/storage';
+import { UserPlus, Fingerprint, User, MapPin, Phone, CreditCard, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState('');
   
   const [formData, setFormData] = useState({
     full_name: '',
@@ -19,7 +23,6 @@ export default function RegisterPage() {
     state_of_origin: '',
     phone_number: '',
     national_id: '',
-    photo_url: '',
   });
 
   useEffect(() => {
@@ -32,15 +35,30 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setUploadError('');
     setLoading(true);
 
     try {
+      let photoUrl = '';
+
+      // Upload image if selected
+      if (selectedFile) {
+        const uploadResult = await uploadHerderPhoto(selectedFile);
+        if (!uploadResult.success) {
+          setUploadError(uploadResult.error || 'Failed to upload image');
+          setLoading(false);
+          return;
+        }
+        photoUrl = uploadResult.url || '';
+      }
+
       const mockFaceVector = `FACE_${formData.full_name.replace(/\s/g, '_')}_${Date.now()}`;
       const mockFingerprint = `FINGER_${formData.full_name.replace(/\s/g, '_')}_${Date.now()}`;
 
       const herderData = {
         ...formData,
         age: parseInt(formData.age),
+        photo_url: photoUrl,
         face_vector: mockFaceVector,
         fingerprint_hash: mockFingerprint,
       };
@@ -55,8 +73,8 @@ export default function RegisterPage() {
           state_of_origin: '',
           phone_number: '',
           national_id: '',
-          photo_url: '',
         });
+        setSelectedFile(null);
         setSuccess(false);
       }, 3000);
       
@@ -80,7 +98,6 @@ export default function RegisterPage() {
     { name: 'state_of_origin', label: 'State of Origin', type: 'text', icon: MapPin, required: true, placeholder: 'Enter state' },
     { name: 'phone_number', label: 'Phone Number', type: 'tel', icon: Phone, required: false, placeholder: '+234 xxx xxx xxxx' },
     { name: 'national_id', label: 'National ID', type: 'text', icon: CreditCard, required: false, placeholder: 'Enter national ID' },
-    { name: 'photo_url', label: 'Photo URL', type: 'url', icon: Image, required: false, placeholder: 'https://...' },
   ];
 
   return (
@@ -117,7 +134,7 @@ export default function RegisterPage() {
             )}
 
             {/* Error Message */}
-            {error && (
+            {(error || uploadError) && (
               <div className="bg-gradient-to-r from-red-50 to-red-100/50 border-b border-red-200 p-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-red-500 rounded-full">
@@ -125,7 +142,7 @@ export default function RegisterPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-red-800">Registration Failed</p>
-                    <p className="text-sm text-red-600">{error}</p>
+                    <p className="text-sm text-red-600">{uploadError || error}</p>
                   </div>
                 </div>
               </div>
@@ -158,6 +175,13 @@ export default function RegisterPage() {
                     </div>
                   );
                 })}
+
+                {/* Photo Upload */}
+                <PhotoUpload
+                  onFileSelect={setSelectedFile}
+                  selectedFile={selectedFile}
+                  disabled={loading}
+                />
               </div>
 
               {/* Biometric Info Card */}
