@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Layout from '@/components/Layout';
 import { herdersAPI } from '@/lib/api';
-import { UserPlus, Hash } from 'lucide-react';
+import { UserPlus, Fingerprint, User, MapPin, Phone, CreditCard, Image, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -35,7 +35,6 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // Generate mock biometric data
       const mockFaceVector = `FACE_${formData.full_name.replace(/\s/g, '_')}_${Date.now()}`;
       const mockFingerprint = `FINGER_${formData.full_name.replace(/\s/g, '_')}_${Date.now()}`;
 
@@ -46,10 +45,9 @@ export default function RegisterPage() {
         fingerprint_hash: mockFingerprint,
       };
 
-      const response = await herdersAPI.register(herderData);
+      await herdersAPI.register(herderData);
       setSuccess(true);
       
-      // Reset form
       setTimeout(() => {
         setFormData({
           full_name: '',
@@ -76,131 +74,126 @@ export default function RegisterPage() {
     });
   };
 
+  const inputFields = [
+    { name: 'full_name', label: 'Full Name', type: 'text', icon: User, required: true, placeholder: 'Enter full name' },
+    { name: 'age', label: 'Age', type: 'number', icon: User, required: true, placeholder: 'Enter age' },
+    { name: 'state_of_origin', label: 'State of Origin', type: 'text', icon: MapPin, required: true, placeholder: 'Enter state' },
+    { name: 'phone_number', label: 'Phone Number', type: 'tel', icon: Phone, required: false, placeholder: '+234 xxx xxx xxxx' },
+    { name: 'national_id', label: 'National ID', type: 'text', icon: CreditCard, required: false, placeholder: 'Enter national ID' },
+    { name: 'photo_url', label: 'Photo URL', type: 'url', icon: Image, required: false, placeholder: 'https://...' },
+  ];
+
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="flex items-center mb-6">
-              <UserPlus className="w-8 h-8 text-green-600 mr-3" />
-              <h1 className="text-2xl font-bold text-gray-800">
-                Register New Herder
-              </h1>
+      <div className="p-8 animate-fade-in">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg shadow-emerald-500/20">
+              <UserPlus className="w-6 h-6 text-white" />
             </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+              Register New Herder
+            </h1>
+          </div>
+          <p className="text-gray-500 ml-14">Add a new herder to the verification system</p>
+        </div>
 
+        <div className="max-w-4xl">
+          <div className="bg-white rounded-2xl shadow-card border border-gray-100/50 overflow-hidden">
+            {/* Success Message */}
             {success && (
-              <div className="bg-green-50 text-green-700 p-4 rounded-lg mb-6">
-                Herder registered successfully! Biometric data has been captured.
+              <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border-b border-emerald-200 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-emerald-500 rounded-full">
+                    <CheckCircle className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-emerald-800">Registration Successful!</p>
+                    <p className="text-sm text-emerald-600">Herder has been registered with biometric data captured.</p>
+                  </div>
+                </div>
               </div>
             )}
 
+            {/* Error Message */}
             {error && (
-              <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6">
-                {error}
+              <div className="bg-gradient-to-r from-red-50 to-red-100/50 border-b border-red-200 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-500 rounded-full">
+                    <AlertCircle className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-red-800">Registration Failed</p>
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
+                </div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="full_name"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Age *
-                  </label>
-                  <input
-                    type="number"
-                    name="age"
-                    value={formData.age}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    State of Origin *
-                  </label>
-                  <input
-                    type="text"
-                    name="state_of_origin"
-                    value={formData.state_of_origin}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    National ID
-                  </label>
-                  <input
-                    type="text"
-                    name="national_id"
-                    value={formData.national_id}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Photo URL
-                  </label>
-                  <input
-                    type="url"
-                    name="photo_url"
-                    value={formData.photo_url}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                    placeholder="https://..."
-                  />
-                </div>
+            <form onSubmit={handleSubmit} className="p-8">
+              {/* Form Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {inputFields.map((field) => {
+                  const Icon = field.icon;
+                  return (
+                    <div key={field.name} className="group">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        {field.label} {field.required && <span className="text-red-500">*</span>}
+                      </label>
+                      <div className="relative">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors">
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <input
+                          type={field.type}
+                          name={field.name}
+                          value={formData[field.name as keyof typeof formData]}
+                          onChange={handleChange}
+                          className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 outline-none"
+                          placeholder={field.placeholder}
+                          required={field.required}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="flex items-start">
-                  <Hash className="w-5 h-5 text-blue-600 mr-2 mt-0.5" />
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium mb-1">Biometric Capture</p>
-                    <p>Mock biometric data (face vector and fingerprint) will be automatically generated for this herder upon registration.</p>
+              {/* Biometric Info Card */}
+              <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 rounded-xl p-6 mb-8 border border-blue-100">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                    <Fingerprint className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-1">Biometric Data Capture</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Mock biometric data including face vector and fingerprint hash will be automatically 
+                      generated for this herder upon registration. In production, this would integrate with 
+                      actual biometric capture devices.
+                    </p>
                   </div>
                 </div>
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition disabled:bg-gray-400 font-medium"
+                className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-4 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all duration-300 font-semibold shadow-lg shadow-emerald-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
               >
-                {loading ? 'Registering...' : 'Register Herder'}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Registering...</span>
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    <span>Register Herder</span>
+                  </>
+                )}
               </button>
             </form>
           </div>
