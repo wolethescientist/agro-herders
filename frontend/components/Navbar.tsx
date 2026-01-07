@@ -21,6 +21,7 @@ export default function Sidebar() {
 
   const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/herders', label: 'Herders', icon: User },
     { href: '/register', label: 'Register Herder', icon: UserPlus },
     { href: '/verify', label: 'Verify Identity', icon: ShieldCheck },
     { href: '/routes', label: 'Routes Map', icon: Map },
