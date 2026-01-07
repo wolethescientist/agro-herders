@@ -72,7 +72,7 @@ export default function Home() {
               className="group relative px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-2xl flex items-center space-x-2 text-lg font-semibold overflow-hidden hover:scale-105 hover:-translate-y-1"
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-700 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-              <span className="relative">Start Verification</span>
+              <span className="relative">Register Now</span>
               <ArrowRight className="relative h-5 w-5 group-hover:translate-x-2 transition-transform duration-300" />
             </button>
             <button
